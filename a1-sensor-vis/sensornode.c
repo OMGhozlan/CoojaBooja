@@ -1,3 +1,13 @@
+/**
+ * @file sensornode.c
+ * @author Ghozlan
+ * @brief 
+ * @version 0.1
+ * @date 2021-05-12
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #include "sensornode.h"
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +25,7 @@
 
 
 float getRandValue(float min, float max) {
-    srand(33);
+    // srand(33);
     return (min + ((float) rand() / RAND_MAX) * (max - min));
 }
 
@@ -39,7 +49,7 @@ void getSensorData(sensor* sensor) {
     sensor->temperature = (TEMPR + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR;
     sensor->humidity = (HUMIDITY + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR;
     sensor->pressure = (PRESSURE + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR;
-    printf("Temp = %.3f || Humid = %.3f || Pres = %.3f\n",
+    printf("%.3f,%.3f,%.3f\n",
      sensor->temperature, sensor->humidity, sensor->pressure);
 }
 

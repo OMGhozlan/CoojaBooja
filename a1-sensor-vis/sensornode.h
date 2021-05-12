@@ -1,7 +1,7 @@
 /**
  * @file sensornode.h
- * @author your name (you@domain.com)
- * @brief 
+ * @author Ghozlan
+ * @brief Contains structs, macros and function prototypes needed for a sensor node
  * @version 0.1
  * @date 2021-05-12
  * 
@@ -39,7 +39,7 @@ typedef struct sensorData {
     float temperature;
     float humidity;
     float pressure;
-    unsigned int ID;
+    unsigned int msgCount;
 } sensor;
 
 

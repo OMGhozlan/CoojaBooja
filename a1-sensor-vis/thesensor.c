@@ -1,3 +1,14 @@
+
+/**
+ * @file thesensor.c
+ * @author Ghozlan
+ * @brief 
+ * @version 0.1
+ * @date 2021-05-12
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #include "contiki.h"
 #include "sensornode.h"
 #include "sys/etimer.h"
@@ -70,13 +81,13 @@ PROCESS_THREAD(thesensor_proc, ev, data) {
          */
         if(NETSTACK_ROUTING.node_is_reachable() &&
         NETSTACK_ROUTING.get_root_ipaddr(&dstIP)) {
-            LOG_INFO("Sending collected data #%u to ", sensor.ID);
+            /* LOG_INFO("[+]Sending collected data #%u to ", 6699);
             LOG_INFO_6ADDR(&dstIP);
-            LOG_INFO_("\n");
+            LOG_INFO_("\n"); */
             simple_udp_sendto(&udp_conn, &sensor, sizeof(sensor), &dstIP);
-            sensor.ID++;
+            sensor.msgCount++;
         } else {
-            LOG_INFO("Controller not reachable yet\n");
+            LOG_INFO("[-]Controller not reachable\n");
         }
         /**
          * @brief Re-set timer object
