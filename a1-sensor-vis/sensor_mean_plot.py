@@ -19,7 +19,7 @@ stats_dfs = []
 temp_means, humid_means, pressure_means = [], [], []
 mean_arr = [temp_means, humid_means, pressure_means]
 for n, r in itertools.product(node_count, rounds):
-    df = pd.read_csv(f'datastats_{n}_{r}r.csv')
+    df = pd.read_csv(f'./data/data_stats_{n}_{r}r.csv')
     print(f'For {n} nodes and {r} rounds')
     for col, val, mean_ in zip(columns, values_o, mean_arr,):
         column = df[col]
@@ -65,4 +65,3 @@ ax.legend()
 fig.tight_layout()
 
 plt.show()
-plt.savefig('result.png', dpi=fig.dpi, bbox_inches='tight') 
