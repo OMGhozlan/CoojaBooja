@@ -10,20 +10,14 @@
  */
 
 #include "contiki.h"
-#include "sys/log.h"
 #include "sensornode.h"
+#include "sys/log.h"
 #include "net/routing/routing.h"
 #include "net/netstack.h"
 #include "net/ipv6/simple-udp.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
- * @brief  Logging macros
- * 
- */
-#define LOG_MODULE "CollectorNode"
-#define LOG_LEVEL LOG_LEVEL_INFO // Acts as a method to print/echo data
 
 /**
  * @brief Server configuration macros

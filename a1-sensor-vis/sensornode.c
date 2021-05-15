@@ -36,8 +36,14 @@ float getRandValue(float min, float max) {
  * @param iv Intial value (random number) to draw from the distribution
  * @return float (number drawn from a Gaussian distribution)
  */
-float gausGen(float iv) {    
-    return (float)(exp(-0.5f * iv * iv) * sqrt(2 * PI));
+float gausGen() {  
+    float u, v, r2;
+    do {
+        u = 2.0 * getRandValue(-1, 1) - 1.0;
+        v = 2.0 * getRandValue(-1, 1) - 1.0;
+        r2 = u * u + v * v;
+    } while (r2 >= 1.0 || r2 == 0);
+    return (float)(u * sqrt(-2.0 * log(r2) / r2));
 }
 
 /**
@@ -45,10 +51,10 @@ float gausGen(float iv) {
  * 
  * @param sensor 
  */
-void getSensorData(sensor* sensor) {
-    sensor->temperature = (TEMPR + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR;
-    sensor->humidity = (HUMIDITY + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR;
-    sensor->pressure = (PRESSURE + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR;
+void getSensorData(sensor* sensor, float noise) {
+    sensor->temperature = ((TEMPR + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR) + noise;
+    sensor->humidity = ((HUMIDITY + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR) + noise;
+    sensor->pressure = ((PRESSURE + (*awgnGen_ptr)()) * AMP_FACTOR * FADE_FACTOR) + noise;
     printf("%.3f,%.3f,%.3f\n",
      sensor->temperature, sensor->humidity, sensor->pressure);
 }
@@ -59,7 +65,7 @@ void getSensorData(sensor* sensor) {
  * @return float (noise)
  */
 float awgnGen() {
-    return gausGen(getRandValue(-3.5, 3.5));
+    return gausGen();
 }
 
 float (*awgnGen_ptr)() = &awgnGen;

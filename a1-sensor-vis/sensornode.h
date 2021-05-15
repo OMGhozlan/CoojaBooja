@@ -15,6 +15,10 @@
 #define AMP_FACTOR 2.0f
 #endif
 
+#ifndef LOG_LEVEL
+#define LOG_LEVEL LOG_LEVEL_INFO
+#endif
+
 #ifndef FADE_FACTOR
 #define FADE_FACTOR 0.5f
 #endif
@@ -42,26 +46,10 @@ typedef struct sensorData {
     unsigned int msgCount;
 } sensor;
 
-
-/**
- * @brief Data type that contains all parameters
- * that are taken into consideration to get a sensor
- * reading in the proposed environment
- */
-typedef struct ctrlblkData{
-    float theta;
-    float n_i;
-    float a_i;
-    float h_i;    
-}ctrlblk;
-
 float getRandValue(float min, float max);
-float gausGen(float num);
+float gausGen();
 float awgnGen();
-void getSensorData(sensor* sensor);
+void getSensorData(sensor* sensor, float noise);
 float (*awgnGen_ptr)();
-// extern "C" float (*awgnGen_ptr)() = &awgnGen;
-
-// extern int node_count;
 
 #endif

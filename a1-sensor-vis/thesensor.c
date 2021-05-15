@@ -20,20 +20,18 @@
 #include <stdio.h>
 
 /**
- * @brief  Logging macros
+ * @brief Logging macros
  * 
  */
 #define LOG_MODULE "TheSensor"
-#define LOG_LEVEL LOG_LEVEL_INFO // Acts as a method to print/echo data
 
 /**
  * @brief Server configuration macros
  * 
  */
-#define WITH_ACK 0
 #define UDP_SENSOR_PORT 6666
 #define UDP_CONTROLLER_PORT 5555
-#define COLLECTION_INTERVAL (3 * CLOCK_SECOND)
+#define COLLECTION_INTERVAL (3.3 * CLOCK_SECOND)
 
 
 /**
@@ -73,7 +71,8 @@ PROCESS_THREAD(thesensor_proc, ev, data) {
          * them in the sensor object
          * 
          */
-        getSensorData(&sensor);
+        float v_ = (*awgnGen_ptr)();
+        getSensorData(&sensor, v_);
         
         /**
          * @brief Check if the controller/collector node connectivity
@@ -81,9 +80,6 @@ PROCESS_THREAD(thesensor_proc, ev, data) {
          */
         if(NETSTACK_ROUTING.node_is_reachable() &&
         NETSTACK_ROUTING.get_root_ipaddr(&dstIP)) {
-            /* LOG_INFO("[+]Sending collected data #%u to ", 6699);
-            LOG_INFO_6ADDR(&dstIP);
-            LOG_INFO_("\n"); */
             simple_udp_sendto(&udp_conn, &sensor, sizeof(sensor), &dstIP);
             sensor.msgCount++;
         } else {
