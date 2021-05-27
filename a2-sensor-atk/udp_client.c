@@ -164,13 +164,11 @@ static void rx_cback(struct simple_udp_connection *c, const uip_ipaddr_t *sndrAd
 PROCESS_THREAD(client_node_proc, ev, data){
     static struct etimer timer;
     static char str[100];
-    static int c;
     uip_ipaddr_t dstIP;    
 
     PROCESS_BEGIN();
     simple_udp_register(&udp_conn, UDP_CLIENT_PORT, NULL, 
     UDP_SERVER_PORT, rx_cback);
-    c = 0;
     
     /**
      * @brief Construct a new etimer set object
@@ -190,9 +188,8 @@ PROCESS_THREAD(client_node_proc, ev, data){
              * them in the sensor object
              * 
              */
-            snprintf(str, 255, "%s", d_[c % 99]);
+            snprintf(str, 255, "%s", d_[random_rand() % 99]);
             simple_udp_sendto(&udp_conn, str, strlen(str), &dstIP);
-            c++;
         } else {
             LOG_INFO("[-]Controller not reachable\n");
         }
