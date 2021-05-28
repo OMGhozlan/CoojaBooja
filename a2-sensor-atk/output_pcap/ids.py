@@ -3,7 +3,7 @@ import numpy as np
 import netaddr
 import re
 from datetime import datetime
-from sklearn.naive_bayes import ComplementNB
+from sklearn.naive_bayes import ComplementNB, GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.model_selection import KFold, cross_val_score, cross_validate
 from sklearn.metrics import (classification_report, confusion_matrix,
@@ -71,7 +71,12 @@ y = df['label']
 
 kf = KFold(n_splits=10, shuffle=True)
 
-clfs = [AdaBoostClassifier(n_estimators=100), RandomForestClassifier(n_estimators=100)] #, ComplementNB()]
+clfs = [AdaBoostClassifier(n_estimators=100), RandomForestClassifier(n_estimators=100), GaussianNB(), MultinomialNB(), BernoulliNB()] #, ComplementNB()]
+
+cv_results = []
 
 for clf in clfs:
-    cv_results = cross_validate(clf, X, y, cv=kf, scoring=('accuracy', 'f1', 'precision', 'recall'))
+    print(clf)
+    cv_results.append(pd.DataFrame(cross_validate(clf, X, y, cv=kf, scoring=('accuracy', 'f1', 'precision', 'recall'))))
+    
+print(cv_results)
