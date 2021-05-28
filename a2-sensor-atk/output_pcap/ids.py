@@ -2,12 +2,19 @@ import pandas as pd
 import numpy as np
 import netaddr
 import re
+from datetime import datetime
 from sklearn.naive_bayes import ComplementNB
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.model_selection import KFold, cross_val_score, cross_validate
 from sklearn.metrics import (classification_report, confusion_matrix,
                              plot_confusion_matrix,
                              precision_recall_fscore_support)
+
+
+def timestamp(dt):
+    zero = datetime(1900, 1, 1, 0, 0, 0, 0)
+    dt = datetime.strptime(dt,'%M:%S.%f')
+    return (dt - zero).total_seconds() * 1000.0
 
 
 x_columns = ['icmpv6', 'udp', 'wpan', 'src_mac', 'src_ip', 'src_port', 'dst_mac', 'dst_ip', 'dst_port',
@@ -50,6 +57,11 @@ df.columns = [col.lower().replace(" ", "_") for col in df.columns]
 df['src_ip'] = df['src_ip'].apply(lambda x: netaddr.IPAddress(x) if x != '0' else 0)
 df['dst_ip'] = df['dst_ip'].apply(lambda x: netaddr.IPAddress(x) if x != '0' else 0)
 
+# Convert times into milliseconds to be fed into classifier
+df['init_ts'] = df['init_ts'].apply(lambda x: timestamp(x))
+df['last_ts'] = df['last_ts'].apply(lambda x: timestamp(x))
+
+
 df = df[['icmpv6', 'udp', 'wpan', 'src_mac', 'src_ip', 'src_port', 'dst_mac', 'dst_ip', 'dst_port',
        'init_ts', 'last_ts', 'ts', 'duration', 'label']]
 df.to_csv('data_processed.csv', index=False)
@@ -59,7 +71,7 @@ y = df['label']
 
 kf = KFold(n_splits=10, shuffle=True)
 
-clfs = [AdaBoostClassifier(n_estimators=100), RandomForestClassifier(n_estimators=100), ComplementNB()]
+clfs = [AdaBoostClassifier(n_estimators=100), RandomForestClassifier(n_estimators=100)] #, ComplementNB()]
 
 for clf in clfs:
     cv_results = cross_validate(clf, X, y, cv=kf, scoring=('accuracy', 'f1', 'precision', 'recall'))
