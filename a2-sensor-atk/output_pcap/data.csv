@@ -1,4 +1,4 @@
-Protocol,Src IP,Src Port,Dst IP,Dst Port,Init Ts,Last Ts,Ts,Duration,Mac Addr,Label
+protocol,src_ip,src_port,dst_ip,dst_port,init_ts,last_ts,ts,duration,mac_addr,label
 ICMPv6,fe80::212:7401:1:101,0,ff02::1a,0,30:47.7,30:47.7,1622120000000000.0,0,"{'FF:FF:FF:FF:FF:FF:FF:FF', '00:12:74:01:00:01:01:01'}",Normal
 ICMPv6,fe80::212:7401:1:101,0,fe80::212:7406:6:606,0,30:49.7,30:49.9,1622120000000000.0,234361,"{'00:12:74:06:00:06:06:06', '00:12:74:01:00:01:01:01'}",Normal
 ICMPv6,fe80::212:7401:1:101,0,fe80::212:7403:3:303,0,30:49.7,30:49.9,1622120000000000.0,234360,"{'00:12:74:03:00:03:03:03', '00:12:74:01:00:01:01:01'}",Normal
