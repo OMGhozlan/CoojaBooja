@@ -1,6 +1,7 @@
 import sys
 import pandas as pd
 import numpy as np
+import json
 from sklearn.naive_bayes import ComplementNB, GaussianNB, MultinomialNB, BernoulliNB, CategoricalNB
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.model_selection import KFold, cross_val_score, cross_validate, train_test_split
@@ -16,7 +17,7 @@ if __name__ == '__main__':
        file_ = None
        if len(sys.argv) == 1:
               while not file_:
-                     file_ = input("Enter file name:")
+                     file_ = input("Enter file name: ")
        else:
               file_ = sys.argv[1]
 
@@ -44,4 +45,5 @@ if __name__ == '__main__':
               clf.fit(X_train, y_train)
               pred_ = clf.predict(X_test)
               conf_mat = confusion_matrix(pred_, y_test)
-              classification_report(pred_, y_test, output_dict=True)
+              rep = classification_report(pred_, y_test, output_dict=True)
+              print(f'Confusion Matrix:\n{conf_mat}\nClassification stats:\n{json.dumps(rep, sort_keys=True, indent=2)}')

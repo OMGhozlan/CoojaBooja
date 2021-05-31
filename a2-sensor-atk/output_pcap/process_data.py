@@ -85,6 +85,7 @@ if __name__ == '__main__':
         df[columns[1:]].to_csv(f'data.csv', index=False)
     else:
         df.drop(columns=columns[:-1], inplace=True)
+        df['label'] = (df['label'] == 'Malicious').astype(int)
         df.fillna(0, inplace=True)
         df.to_csv(f'data_l.csv', index=False)
     print("[*] Done!")
