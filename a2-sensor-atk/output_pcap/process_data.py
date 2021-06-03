@@ -8,6 +8,8 @@ import re
 from datetime import datetime
 
 
+lbl_dict = {'Normal': 0, 'Mal_UDP': 1, 'Mal_Ping': 2}
+
 columns = ['session_key', 'protocol', 'src_ip', 'src_port','dst_ip', 'dst_port', 
 'init_ts', 'last_ts', 'ts', 'duration', 'mac_addr','label']
 
@@ -69,23 +71,28 @@ def process_other_feats(file="data.csv", to_csv=True):
               df.to_csv('data_processed.csv', index=False)
        return df
 
-def cat_files():
+def cat_files(mc=0):
     df = []
     for i in range(1, 4):
-        df.append(pd.read_csv(f'a2_{i}_labeled.csv'))
-
+       if mc:
+              df.append(pd.read_csv(f'a2_{i}_ln.csv'))
+       else:
+              df.append(pd.read_csv(f'a2_{i}_labeled.csv'))
     df = pd.concat(df)
     df.columns = [col.lower().replace(" ", "_") for col in df.columns]
     return df
 
 
 if __name__ == '__main__':
-    df = cat_files()
+    df = cat_files(sys.argv[2] or 0)
     if len(sys.argv) == 2:
-        df[columns[1:]].to_csv(f'data.csv', index=False)
+       df[columns[1:]].to_csv(f'data.csv', index=False)
     else:
-        df.drop(columns=columns[:-1], inplace=True)
-        df['label'] = (df['label'] == 'Malicious').astype(int)
-        df.fillna(0, inplace=True)
-        df.to_csv(f'data_l.csv', index=False)
+       df.drop(columns=columns[:-1], inplace=True)
+       if len(np.unique(df['label'])) == 3:
+              df['label'] = df['label'].apply(lambda x: lbl_dict[x]).astype(int)
+       else:
+              df['label'] = (df['label'] == 'Malicious').astype(int)
+       df.fillna(0, inplace=True)
+       df.to_csv(f'data_l.csv', index=False)
     print("[*] Done!")

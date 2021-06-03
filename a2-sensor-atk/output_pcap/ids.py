@@ -9,8 +9,12 @@ from sklearn.metrics import (classification_report, confusion_matrix,
                              plot_confusion_matrix,
                              precision_recall_fscore_support)
 
+import warnings
+warnings.filterwarnings('ignore')
 
 if __name__ == '__main__':
+
+       lbl_ = [['Normal' 'Malicious'], ['Normal', 'Mal_UDP', 'Mal_Ping']]
 
        kf = KFold(n_splits=10, shuffle=True)
        
@@ -31,11 +35,11 @@ if __name__ == '__main__':
 
        clfs = [AdaBoostClassifier(n_estimators=100), RandomForestClassifier(n_estimators=100), GaussianNB(), MultinomialNB(), BernoulliNB()] #, ComplementNB()]
 
-       cv_results = []
-
+       cv_results, f1_met, pre_met, rec_met = [], ['f1', 'f1_macro'], ['precision', 'precision_macro'], ['recall', 'recall_macro']
+       m_or_b = len(np.unique(y))==3
        for clf in clfs:
               print(clf)
-              cv_results.append(pd.DataFrame(cross_validate(clf, X, y, cv=kf, scoring=('accuracy', 'f1', 'precision', 'recall'))))
+              cv_results.append(pd.DataFrame(cross_validate(clf, X, y, cv=kf, scoring=('accuracy', f1_met[m_or_b], pre_met[m_or_b], rec_met[m_or_b]))))
        
        print(cv_results)
 
@@ -45,5 +49,7 @@ if __name__ == '__main__':
               clf.fit(X_train, y_train)
               pred_ = clf.predict(X_test)
               conf_mat = confusion_matrix(pred_, y_test)
-              rep = classification_report(pred_, y_test, output_dict=True)
+              m_or_b = len(np.unique(y_test))==3
+              rep = classification_report(pred_, y_test, output_dict=True, target_names=lbl_[m_or_b])
+              plot_confusion_matrix(clf, X_test, y_test)
               print(f'Confusion Matrix:\n{conf_mat}\nClassification stats:\n{json.dumps(rep, sort_keys=True, indent=2)}')
