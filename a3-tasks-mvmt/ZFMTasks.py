@@ -95,97 +95,50 @@ def attack_locations_generator(big_graph, num_att):
 
 def task_generator(big_graph, num_tasks, days, df, ligi, on_peak, attackLocations, num_att):
     attack_radius = 50
-    tl = []
-    l = []
-    l = list(big_graph.nodes())
-    # lengthl = len(l)
+    tl, l = list(), list(big_graph.nodes())
     for i in range(num_tasks):
-        day = random.randint(1,days)
-        # if(day == 0):
-        #     h = random.randint(12,23)
-        # else:
-        #     h = random.randint(0,23)
-        if(random.randint(1,10)<2):
-            h = random.randint(0,5)
+        day = np.random.choice(range(1, days + 1))
+
+        #Task hour and minute
+        distrib = np.random.randint(1, 10)
+        if distrib <= 4:
+            h = np.random.randint(9, 10)
+        elif 4 < distrib <= 7:
+            h = np.random.randint(12, 16)
         else:
-            h = random.randint(6,23)
-        m = random.randint(0,59)
+            h = np.random.randint(18, 19)
+        m = np.random.randint(0, 59)
 
-        # df = random.randint(30,100)
-        rnum1 = random.randint(1,100)
-        # 90% tasks are ligitimate
-        # if a task is iligitimate:
-        #   70% the duration between 40 and 60
-        #   80% it's on peak
-
-        if(rnum1 < 11):
-            ligi = False
-            # rnum2 = random.randint(1,10)
-            if(random.randint(1,10)<4):
-                dur = random.randint(1,3)*10 #30% the duraion between 10 and 30
-            else:
-                dur = random.randint(4,6)*10
-            # rnum3 = random.randint(1,10)
-            if(random.randint(1,10)>2):
-                # if(day!=0):
-                h = random.randint(7,11)# 80% on peak hours
-            else:
-                h = random.randint(12,17)
-            # else:
-            #     h = random.randint(*random.choice([(0,6),(14,23)]))
-            # rnum4 = random.randint(1,10)
-            if(random.randint(1,10)>2):
-                r = random.randint(7,10)
-            else:
-                r = random.randint(1,6)
-            # Select random attack locations
-            rnum5 = random.randint(0,num_att-1)
-            y_a = attackLocations[rnum5][0]
-            x_a = attackLocations[rnum5][1]
-            # Select random distance from 0m to x00m from the attack location center
-            # Change!
-            distance = random.randint(0,attack_radius)*0.001
-            # origin_a = geopy.Point(y_a, x_a)
-            # Select random bearing
-            origin_a = (y_a, x_a)
-            bearing = random.randint(0,360)
-            destination_a = VincentyDistance(kilometers=distance).destination(origin_a, bearing)
-            y, x = destination_a.latitude, destination_a.longitude  #got the iligitimate location
-
+        # Task duration
+        distrib = np.random.randint(1, 10)
+        if distrib <= 5:
+            dur = np.random.choice([20, 40, 60])
+        elif 5 < distrib <= 9:
+            dur = np.random.choice([30, 50, 70])
         else:
-            ligi = True
-            dur = random.randint(1,6)*10
-            r = random.randint(1,10)
-            index = random.choice(range(len(l)))
-            y=big_graph.nodes[l[index]]['y']
-            x=big_graph.nodes[l[index]]['x']
-            # y=big_graph.nodes[random.choice(l)]['y']
-            # x=big_graph.nodes[random.choice(l)]['x']
-            # ind = random.randint(0,lengthl-1)
-            # y=l[ind]['y']
-            # x=l[ind]['x']
-
-        #            num_move = dur/10;
-        #            for i in range(num_move):
-        # need remaining time
-
+            dur = np.random.choice([10, 80, 100])
+        
+        task_value = round(np.random.uniform(1, 10))
+        ligi = True
+        r = np.random.randint(1,10)
+        index = np.random.choice(range(len(l)))
+        y = big_graph.nodes[l[index]]['y']
+        x = big_graph.nodes[l[index]]['x']
         remaining_t = dur
-        grid_num=convert_location(big_graph,y,x)
+        grid_num = convert_location(big_graph, y, x)
         if(h in range(7,11)):
             on_peak = True
         else:
             on_peak = False
-        tl.append([i+1, float(y), float(x), day, h, m, dur, remaining_t, r, df,ligi,on_peak,grid_num])
-
-        #tl.append([i+1, float(big_graph.nodes[random.choice(l)]['y']), float(big_graph.nodes[random.choice(l)]['x']), day, h, m, dur, r, df,ligi,on_peak])#big_graph: G_big
+        tl.append([i+1, float(y), float(x), day, h, m, dur, remaining_t, r, df, ligi, on_peak, grid_num])
 
     return tl
 '''
     function to generate the movements of a task
 '''
-def task_movement(tl):
-    taskMovementl=[]
-    for i in range(0,len(tl)):
+def movements_generator(tl):
+    task_movements = list()
+    for i in range(len(tl)):
         y = tl[i][1]
         x = tl[i][2]
         day = tl[i][3]
@@ -201,34 +154,34 @@ def task_movement(tl):
 
         num_move = int(dur/10)
         each_r = float(r)/float(num_move)
-        #print(num_move)
-        for j in range(0,num_move):
+        for j in range(num_move):
+            iter_offset = j * 10
             remaining_t = tl[i][7]
             day = tl[i][3]
             h = tl[i][4]
             m = tl[i][5]
-            distance = random.randint(10,m_r)*0.001
-            # origin = geopy.Point(y, x)
+            distance = np.random.uniform(0.01, 0.08)
             origin = (y, x)
             # Select random bearing
-            bearing = random.randint(0,360)
+            # bearing = np.random.randint(0,360)
+            bearing = 2 * np.sum(np.random.random(360))
             destination = VincentyDistance(kilometers=distance).destination(origin, bearing)
             y, x = destination.latitude, destination.longitude  #got the destinations
-            m = m+j*10
-            if(m>59):
-                h = h+1
-                m = m%60
-                if(h>23):
-                    day = day+1
-                    h = h%24
+            m += iter_offset
+            if(m > 59):
+                h += 1
+                m %= 60
+                if(h > 23):
+                    day += 1
+                    h %= 24
             if(h in range(7,11)):
                 on_peak = True
             else:
                 on_peak = False
-            grid_num=convert_location(G_big,y,x)
-            remaining_t = remaining_t - j*10
-            taskMovementl.append([i+1, float(y), float(x), day, h, m, dur,remaining_t, each_r, df,ligi,on_peak,grid_num])
-    return taskMovementl
+            grid_num = convert_location(G_big, y, x)
+            remaining_t -= iter_offset
+            task_movements.append([i + 1, float(y), float(x), day, h, m, dur, remaining_t, each_r, df, ligi, on_peak, grid_num])
+    return task_movements
 
 
 
@@ -818,7 +771,7 @@ if  name_city!='no' :
                 writer.writerow({'ID':tasks[i][0],'Latitude':tasks[i][1],'Longitude':tasks[i][2],'Day':tasks[i][3],'Hour':tasks[i][4],'Minute':tasks[i][5],'Duration':tasks[i][6],'RemainingTime':tasks[i][7],'Resources':tasks[i][8],'Coverage':tasks[i][9],'Ligitimacy':tasks[i][10],'OnPeakHours':tasks[i][11],'GridNumber':tasks[i][12]})
 
         #
-        taskMovementl = task_movement(tasks)
+        task_movements = movements_generator(tasks)
 
         csvfile = open('./Inputs/Mobility/differentradius/50/'+str(run_num)+'/TasksMovement.csv','w')
         # csvfile = open('./Inputs/Mobility/test/timmins/TasksIncludeMovements_'+str(num_usr)+str(name_city)+str(m_r)+str(num_att)+'.csv','w')
@@ -826,18 +779,18 @@ if  name_city!='no' :
             titles = ['ID','Latitude','Longitude','Day','Hour','Minute','Duration','RemainingTime','Resources','Coverage','Ligitimacy','OnPeakHours','GridNumber']
             writer = csv.DictWriter(csvfile, fieldnames=titles)
             writer.writeheader()
-            for i in range(0,len(taskMovementl)):
-                # if(taskMovementl[i][3]==0):
+            for i in range(0,len(task_movements)):
+                # if(task_movements[i][3]==0):
                 #     continue
-                writer.writerow({'ID':taskMovementl[i][0],'Latitude':taskMovementl[i][1],'Longitude':taskMovementl[i][2],'Day':taskMovementl[i][3],'Hour':taskMovementl[i][4],'Minute':taskMovementl[i][5],'Duration':taskMovementl[i][6],'RemainingTime':taskMovementl[i][7],'Resources':taskMovementl[i][8],'Coverage':taskMovementl[i][9],'Ligitimacy':taskMovementl[i][10],'OnPeakHours':taskMovementl[i][11],'GridNumber':taskMovementl[i][12]})
+                writer.writerow({'ID':task_movements[i][0],'Latitude':task_movements[i][1],'Longitude':task_movements[i][2],'Day':task_movements[i][3],'Hour':task_movements[i][4],'Minute':task_movements[i][5],'Duration':task_movements[i][6],'RemainingTime':task_movements[i][7],'Resources':task_movements[i][8],'Coverage':task_movements[i][9],'Ligitimacy':task_movements[i][10],'OnPeakHours':task_movements[i][11],'GridNumber':task_movements[i][12]})
 
         # taskm_file = open('./Inputs/Mobility/test/timmins/TasksMovement_'+str(num_usr)+str(name_city)+str(m_r)+str(num_att)+'.txt','w')
         taskm_file = open('./Inputs/Mobility/differentradius/50/'+str(run_num)+'/TasksMovement.txt','w')
         taskm_file.write("/ID-Task/  -/Lat/  -/Long/ -/Day/  -/Hour/ -/Minute/   -/Duration/ -/Remaining time/ -/Resources/    -/Coverage/ -/Ligitimacy/ -/on peak hour/ -/grid_number\n")
-        for i in range(0,len(taskMovementl)):
-            # if(taskMovementl[i][3]==0):
+        for i in range(0,len(task_movements)):
+            # if(task_movements[i][3]==0):
             #     continue
-            taskm_file.write("{}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\n".format(i+1, taskMovementl[i][0],taskMovementl[i][1], taskMovementl[i][2], taskMovementl[i][3], taskMovementl[i][4], taskMovementl[i][5], taskMovementl[i][6], taskMovementl[i][7], taskMovementl[i][8], taskMovementl[i][9], taskMovementl[i][10], taskMovementl[i][11], taskMovementl[i][12]))
+            taskm_file.write("{}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\n".format(i+1, task_movements[i][0],task_movements[i][1], task_movements[i][2], task_movements[i][3], task_movements[i][4], task_movements[i][5], task_movements[i][6], task_movements[i][7], task_movements[i][8], task_movements[i][9], task_movements[i][10], task_movements[i][11], task_movements[i][12]))
 
         taskm_file.close()
 
