@@ -1,0 +1,45 @@
+****************************SETUP SIMULATION****************************
+|Days of simulation| = 1
+
+*********************************USERS**********************************
+|Number of users| = 10000
+
+|Minimum travel time| = 20
+|Maximum travel time| = 30
+
+|Number hour simulation| = 17
+|Start minute simulation| = 23
+
+|Finish hour simulation| = 20	
+|Finish minute simulation| = 56
+
+********************************ANTENNAS*********************************
+|Kind of antennas| = 3G
+|Create random antennas|
+	[1] YES [0] NO = 1
+
+*********************************EVENTS**********************************
+|Use Default list of events|
+ 	[0] YES [1] NO = 1
+
+
+********************************IMPORTANT********************************
+if you choose [1] YES, you have to insert:
+
+|Integer value for the ray(meters)| = 50
+
+********************************Statistics********************************
+|Compute metrics: neighbours stability and neighbours contacts|
+
+ 	[1] YES [0] NO = 0
+
+********************************Type of reporting********************************
+|Continuous reporting 0, delayed reporting 1, probabilistic reporting 2 , piggy backing|
+    [0] cr [1] cd [2] pr = 2
+*********IMPORTANT******
+You can put 6 days of simulation maximum.
+Hours between: 0 and 23
+Minutes between: 1 and 59
+Travel time, for each user, it is a random number between minimum and maximum value
+Ray: it is preferable a value at least equal to 100 meters
+*************************

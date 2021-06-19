@@ -1,0 +1,8 @@
+City: Luxembourg
+Number of users in the simulation: 2000
+Antenna system: 3G
+Start hour: 6:23 am
+Finish hour: 20:56 pm
+Days of simulation: 1
+Ray: 250m
+

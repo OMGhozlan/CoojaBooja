@@ -1,0 +1,4 @@
+ 0 luxembourg_city 10000 1
+ 1 turin 20000 1
+ 2 barcelona 20000 2
+ 3 seul 40000 3
