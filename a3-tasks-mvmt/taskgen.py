@@ -1,4 +1,7 @@
+#!/usr/bin/env python
 import numpy.random as random
+
+num_tasks, days = 1000, 2
 
 def task_generator(num_tasks, days):
     """[summary]
@@ -15,20 +18,20 @@ def task_generator(num_tasks, days):
         task_day = random.choice(range(1, days + 1))
 
         #Task hour and minute
-        distrib = random.randint(1, 10)
-        if distrib <= 4:
+        distrib = random.randint(0, 100)
+        if distrib <= 40:
             task_hour = random.randint(9, 10)
-        elif 4 < distrib <= 7:
+        elif 40 < distrib <= 70:
             task_hour = random.randint(12, 16)
         else:
             task_hour = random.randint(18, 19)
         task_minute = random.randint(0, 59)
 
         # Task duration
-        distrib = random.randint(1, 10)
-        if distrib <= 5:
+        distrib = random.randint(0, 100)
+        if distrib <= 50:
             task_dur = random.choice([20, 40, 60])
-        elif 5 < distrib <= 9:
+        elif 50 < distrib <= 90:
             task_dur = random.choice([30, 50, 70])
         else:
             task_dur = random.choice([10, 80, 100])
@@ -76,8 +79,7 @@ def get_params():
             count+=1
     return num_usr, days
 
-if __name__ == '__main__':
-    num_tasks, days = 1000, 2
+if __name__ == '__main__':    
     print('[*]Generating tasks....')
     tasks = task_generator(num_tasks, days)
     print('[*]Writing tasks to file....')

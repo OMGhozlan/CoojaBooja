@@ -110,7 +110,7 @@ def task_generator(big_graph, num_tasks, days, df, ligi, on_peak, attackLocation
         m = np.random.randint(0, 59)
 
         # Task duration
-        distrib = np.random.randint(1, 10)
+        distrib = np.random.randint(0, 10)
         if distrib <= 5:
             dur = np.random.choice([20, 40, 60])
         elif 5 < distrib <= 9:
@@ -130,7 +130,7 @@ def task_generator(big_graph, num_tasks, days, df, ligi, on_peak, attackLocation
             on_peak = True
         else:
             on_peak = False
-        tl.append([i+1, float(y), float(x), day, h, m, dur, remaining_t, r, df, ligi, on_peak, grid_num])
+        tl.append([i+1, float(y), float(x), day, h, m, dur, remaining_t, r, df, ligi, on_peak, grid_num, task_value])
 
     return tl
 '''
@@ -160,7 +160,8 @@ def movements_generator(tl):
             day = tl[i][3]
             h = tl[i][4]
             m = tl[i][5]
-            distance = np.random.uniform(0.01, 0.08)
+            r_seed = np.arange(np.random.randint(0, 33))
+            distance = np.random.choice(np.random.dirichlet(np.ones(len(r_seed))), p=np.random.dirichlet(np.ones(len(r_seed))))
             origin = (y, x)
             # Select random bearing
             # bearing = np.random.randint(0,360)
@@ -753,22 +754,22 @@ if  name_city!='no' :
         '''
         # task txt file
         task_file = open('./Inputs/Mobility/differentradius/50/'+str(run_num)+'/Tasks.txt', 'w')
-        task_file.write("/ID-Task/  -/Lat/  -/Long/ -/Day/  -/Hour/ -/Minute/   -/Duration/ -/Remaining time/ -/Resources/    -/Coverage/ -/Ligitimacy/ -/on peak hour/ -/grid_number\n")
+        task_file.write("/ID-Task/  -/Lat/  -/Long/ -/Day/  -/Hour/ -/Minute/   -/Duration/ -/Remaining time/ -/Resources/    -/Coverage/ -/Ligitimacy/ -/on peak hour/ -/grid_number -/TaskValue\n")
         for i in range(0,len(tasks)):
-            task_file.write("{}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\n".format(tasks[i][0], tasks[i][1], tasks[i][2], tasks[i][3], tasks[i][4], tasks[i][5], tasks[i][6], tasks[i][7], tasks[i][8], tasks[i][9], tasks[i][10], tasks[i][11], tasks[i][12]))
+            task_file.write("{}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\n".format(tasks[i][0], tasks[i][1], tasks[i][2], tasks[i][3], tasks[i][4], tasks[i][5], tasks[i][6], tasks[i][7], tasks[i][8], tasks[i][9], tasks[i][10], tasks[i][11], tasks[i][12], tasks[i][13]))
 
         task_file.close()
 
         # task csv file
         csvfile = open('./Inputs/Mobility/differentradius/50/'+str(run_num)+'/Tasks.csv','w')
         with csvfile:
-            titles = ['ID','Latitude','Longitude','Day','Hour','Minute','Duration','RemainingTime','Resources','Coverage','Ligitimacy','OnPeakHours','GridNumber']
+            titles = ['ID','Latitude','Longitude','Day','Hour','Minute','Duration','RemainingTime','Resources','Coverage','Ligitimacy','OnPeakHours','GridNumber', 'TaskValue']
             writer = csv.DictWriter(csvfile, fieldnames=titles)
             writer.writeheader()
             for i in range(0,len(tasks)):
                 # if(tasks[i][3]==0):
                 #     continue
-                writer.writerow({'ID':tasks[i][0],'Latitude':tasks[i][1],'Longitude':tasks[i][2],'Day':tasks[i][3],'Hour':tasks[i][4],'Minute':tasks[i][5],'Duration':tasks[i][6],'RemainingTime':tasks[i][7],'Resources':tasks[i][8],'Coverage':tasks[i][9],'Ligitimacy':tasks[i][10],'OnPeakHours':tasks[i][11],'GridNumber':tasks[i][12]})
+                writer.writerow({'ID':tasks[i][0],'Latitude':tasks[i][1],'Longitude':tasks[i][2],'Day':tasks[i][3],'Hour':tasks[i][4],'Minute':tasks[i][5],'Duration':tasks[i][6],'RemainingTime':tasks[i][7],'Resources':tasks[i][8],'Coverage':tasks[i][9],'Ligitimacy':tasks[i][10],'OnPeakHours':tasks[i][11],'GridNumber':tasks[i][12],'TaskValue':tasks[i][13]})
 
         #
         task_movements = movements_generator(tasks)
@@ -776,27 +777,27 @@ if  name_city!='no' :
         csvfile = open('./Inputs/Mobility/differentradius/50/'+str(run_num)+'/TasksMovement.csv','w')
         # csvfile = open('./Inputs/Mobility/test/timmins/TasksIncludeMovements_'+str(num_usr)+str(name_city)+str(m_r)+str(num_att)+'.csv','w')
         with csvfile:
-            titles = ['ID','Latitude','Longitude','Day','Hour','Minute','Duration','RemainingTime','Resources','Coverage','Ligitimacy','OnPeakHours','GridNumber']
+            titles = ['ID','Latitude','Longitude','Day','Hour','Minute','Duration','RemainingTime','Resources','Coverage','Ligitimacy','OnPeakHours','GridNumber', 'TaskValue']
             writer = csv.DictWriter(csvfile, fieldnames=titles)
             writer.writeheader()
             for i in range(0,len(task_movements)):
                 # if(task_movements[i][3]==0):
                 #     continue
-                writer.writerow({'ID':task_movements[i][0],'Latitude':task_movements[i][1],'Longitude':task_movements[i][2],'Day':task_movements[i][3],'Hour':task_movements[i][4],'Minute':task_movements[i][5],'Duration':task_movements[i][6],'RemainingTime':task_movements[i][7],'Resources':task_movements[i][8],'Coverage':task_movements[i][9],'Ligitimacy':task_movements[i][10],'OnPeakHours':task_movements[i][11],'GridNumber':task_movements[i][12]})
+                writer.writerow({'ID':task_movements[i][0],'Latitude':task_movements[i][1],'Longitude':task_movements[i][2],'Day':task_movements[i][3],'Hour':task_movements[i][4],'Minute':task_movements[i][5],'Duration':task_movements[i][6],'RemainingTime':task_movements[i][7],'Resources':task_movements[i][8],'Coverage':task_movements[i][9],'Ligitimacy':task_movements[i][10],'OnPeakHours':task_movements[i][11],'GridNumber':task_movements[i][12],'TaskValue':task_movements[i][13]})
 
         # taskm_file = open('./Inputs/Mobility/test/timmins/TasksMovement_'+str(num_usr)+str(name_city)+str(m_r)+str(num_att)+'.txt','w')
         taskm_file = open('./Inputs/Mobility/differentradius/50/'+str(run_num)+'/TasksMovement.txt','w')
-        taskm_file.write("/ID-Task/  -/Lat/  -/Long/ -/Day/  -/Hour/ -/Minute/   -/Duration/ -/Remaining time/ -/Resources/    -/Coverage/ -/Ligitimacy/ -/on peak hour/ -/grid_number\n")
+        taskm_file.write("/ID-Task/  -/Lat/  -/Long/ -/Day/  -/Hour/ -/Minute/   -/Duration/ -/Remaining time/ -/Resources/    -/Coverage/ -/Ligitimacy/ -/on peak hour/ -/grid_number -/Task Value\n")
         for i in range(0,len(task_movements)):
             # if(task_movements[i][3]==0):
             #     continue
-            taskm_file.write("{}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\n".format(i+1, task_movements[i][0],task_movements[i][1], task_movements[i][2], task_movements[i][3], task_movements[i][4], task_movements[i][5], task_movements[i][6], task_movements[i][7], task_movements[i][8], task_movements[i][9], task_movements[i][10], task_movements[i][11], task_movements[i][12]))
+            taskm_file.write("{}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\t {}\n".format(i+1, task_movements[i][0],task_movements[i][1], task_movements[i][2], task_movements[i][3], task_movements[i][4], task_movements[i][5], task_movements[i][6], task_movements[i][7], task_movements[i][8], task_movements[i][9], task_movements[i][10], task_movements[i][11], task_movements[i][12], task_movements[i][13]))
 
         taskm_file.close()
 
         csvfile = open('./Inputs/Mobility/differentradius/50/'+str(run_num)+'/Illegitimate_'+str(name_city)+str(m_r)+'.csv','w')
         with csvfile:
-            titles = ['ID','Latitude','Longitude','Day','Hour','Minute','Duration','RemainingTime','Resources','Coverage','Ligitimacy','OnPeakHours','GridNumber']
+            titles = ['ID','Latitude','Longitude','Day','Hour','Minute','Duration','RemainingTime','Resources','Coverage','Ligitimacy','OnPeakHours','GridNumber', 'TaskValue']
             writer = csv.DictWriter(csvfile, fieldnames=titles)
             writer.writeheader()
             for i in range(0,len(tasks)):
@@ -804,7 +805,7 @@ if  name_city!='no' :
                 # y = math.cos(tasks[i][1])*math.sin(tasks[i][2])
                 if(tasks[i][10]==True):
                     continue
-                writer.writerow({'ID':tasks[i][0],'Latitude':tasks[i][1],'Longitude':tasks[i][2],'Day':tasks[i][3],'Hour':tasks[i][4],'Minute':tasks[i][5],'Duration':tasks[i][6],'RemainingTime':tasks[i][7],'Resources':tasks[i][8],'Coverage':tasks[i][9],'Ligitimacy':tasks[i][10],'OnPeakHours':tasks[i][11],'GridNumber':tasks[i][12]})
+                writer.writerow({'ID':tasks[i][0],'Latitude':tasks[i][1],'Longitude':tasks[i][2],'Day':tasks[i][3],'Hour':tasks[i][4],'Minute':tasks[i][5],'Duration':tasks[i][6],'RemainingTime':tasks[i][7],'Resources':tasks[i][8],'Coverage':tasks[i][9],'Ligitimacy':tasks[i][10],'OnPeakHours':tasks[i][11],'GridNumber':tasks[i][12],'TaskValue':tasks[i][13]})
 
 
 
