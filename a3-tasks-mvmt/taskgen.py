@@ -4,14 +4,14 @@ import numpy.random as random
 num_tasks, days = 1000, 2
 
 def task_generator(num_tasks, days):
-    """[summary]
+    """Generates a certain number of tasks over a period of days given predefined constraints
 
     Args:
-        num_tasks ([type]): [description]
-        days ([type]): [description]
+        num_tasks (int): Number of tasks that are to be generated
+        days (int): Number of days (interval)
 
     Returns:
-        [type]: [description]
+        list: List of tasks generated
     """
     tasks = list()
     for i in range(num_tasks):

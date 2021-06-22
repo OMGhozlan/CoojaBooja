@@ -5,13 +5,12 @@ from osmnx.distance import great_circle_vec
 from geopy.distance import geodesic as VincentyDistance
 
 def movements_generator(task_list):
-    """[summary]
+    """Generates stochastic user movement based on given list of tasks
 
     Args:
-        task_list ([type]): [description]
-
+        task_list (list): List of tasks (generated in the previous step)
     Returns:
-        [type]: [description]
+        list: List containing the movement data sorted by day of occurence
     """
     movements = list()
 
@@ -47,22 +46,52 @@ def movements_generator(task_list):
     movements.sort(key= lambda movements: movements[3])
     return movements
 
+def get_boundaries(movements):
+    """Helper function to get boundries between days
+
+    Args:
+        movements (list): A list containing all data regarding the user movement
+
+    Returns:
+        list: List of tuples containg boundaries and their location
+    """
+    seen = list()
+    boundries = list()
+    for i, move in enumerate(movements):
+        k = move[3]
+        if k not in seen:
+            seen.append(move[3])
+            boundries.append(i)
+    return boundries
+
 
 def movements_2_txt(movements):
     """Converts movement data into a text file
 
     Args:
-        movements ([list]): A list containing all data regarding the user movement
+        movements (list): A list containing all data regarding the user movement
     Returns:
         int : status code
     """
-    txt_file = open('movements.txt', 'w')
-    txt_file.write("/Task_ID/ /X/ /Y/ /Day/ /Hour/ /Minute/ /Duration/ /Remaining Time/\n")
-    for movement in movements:
-        for item in movement:
-            txt_file.write(f'{item}\t')
-        txt_file.write('\n')
-    txt_file.close()
+    boundries = get_boundaries(movements)
+    for i in range(len(boundries)):
+        txt_file = open(f'movements_{i}.txt', 'w')
+        txt_file.write("/Task_ID/ /X/ /Y/ /Day/ /Hour/ /Minute/ /Duration/ /Remaining Time/\n")
+        arr_length = len(movements)
+        for j in range(boundries[i], arr_length):
+            try:
+                if j == boundries[i+1]:
+                    txt_file.close()
+                    break;
+            except IndexError:
+                if j == arr_length:
+                    return len(boundries)
+                else:
+                    pass
+            for item in movements[j]:
+                txt_file.write(f'{item}\t')
+            txt_file.write('\n')
+        txt_file.close()
     return 1
 
 
