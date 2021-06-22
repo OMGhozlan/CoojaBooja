@@ -16,7 +16,7 @@ def movements_generator(task_list):
 
     for i, task in enumerate(task_list):
         task_id, task_day, task_hour, task_minute, task_dur, task_value = task
-        move_count = int(task_dur/8)
+        move_count = 8
         
         for j in range(move_count):
             iter_offset = j * 8
@@ -41,7 +41,7 @@ def movements_generator(task_list):
                     day += 1
                     hour %= 24
             remaining_time -= iter_offset
-            movements.append([i + 1, float(y), float(x), day, hour, minute, task_dur, remaining_time])
+            movements.append([(i * move_count) + (j + 1), float(y), float(x), day, hour, minute, task_dur, remaining_time])
 
     movements.sort(key= lambda movements: movements[3])
     return movements
@@ -97,7 +97,7 @@ def movements_2_txt(movements):
 
 if __name__ == '__main__':
     from taskgen import task_generator, num_tasks, days
-    print('[*]Generating tasks....')
+    print('[*]Generating nonce for movement....')
     tasks = task_generator(num_tasks, days)
     print('[*]Generating user movement....')
     movements = movements_generator(task_list=tasks)

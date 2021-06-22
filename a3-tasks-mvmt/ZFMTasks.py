@@ -182,6 +182,7 @@ def movements_generator(tl):
             grid_num = convert_location(G_big, y, x)
             remaining_t -= iter_offset
             task_movements.append([i + 1, float(y), float(x), day, h, m, dur, remaining_t, each_r, df, ligi, on_peak, grid_num])
+    task_movements.sort(key= lambda task_movements: task_movements[3])
     return task_movements
 
 
