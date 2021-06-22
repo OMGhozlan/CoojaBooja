@@ -5,6 +5,14 @@ from osmnx.distance import great_circle_vec
 from geopy.distance import geodesic as VincentyDistance
 
 def movements_generator(task_list):
+    """[summary]
+
+    Args:
+        task_list ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     movements = list()
 
     for task in task_list:
@@ -41,13 +49,12 @@ def movements_generator(task_list):
 
 
 def movements_2_txt(movements):
-    """[summary]
+    """Converts movement data into a text file
 
     Args:
-        movements ([type]): [description]
-
+        movements ([list]): A list containing all data regarding the user movement
     Returns:
-        [type]: [description]
+        int : status code
     """
     txt_file = open('movements.txt', 'w')
     txt_file.write("/Task_ID/ /X/ /Y/ /Day/ /Hour/ /Minute/ /Duration/ /Remaining Time/\n")
@@ -57,3 +64,14 @@ def movements_2_txt(movements):
         txt_file.write('\n')
     txt_file.close()
     return 1
+
+
+if __name__ == '__main__':
+    from taskgen import task_generator, num_tasks, days
+    print('[*]Generating tasks....')
+    tasks = task_generator(num_tasks, days)
+    print('[*]Generating user movement....')
+    movements = movements_generator(task_list=tasks)
+    print('[*]Writing user movement to file....')
+    movements_2_txt(movements)
+    print('[*]Done!')    

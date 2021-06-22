@@ -42,13 +42,12 @@ def task_generator(num_tasks, days):
 
 
 def tasks_2_txt(tasks):
-    """[summary]
+    """Converts task data into a text file
 
     Args:
-        tasks ([type]): [description]
-
+        movements ([list]): A list containing all data regarding the generated tasks
     Returns:
-        [type]: [description]
+        int : status code
     """
     txt_file = open('Tasks.txt', 'w')
     txt_file.write("/Task_ID/ /Day/ /Hour/ /Minute/ /Duration/ /Task_Value/\n")
@@ -60,10 +59,10 @@ def tasks_2_txt(tasks):
     return 1
 
 def get_params():
-    """[summary]
+    """Retrieves number of users and number of days from the 'Setup.txt' file
 
     Returns:
-        [type]: [description]
+        num_usr, days: The number of users and days stored in the setup file
     """
     num_usr, days = None, None
     with open('Setup.txt', 'r') as data:
