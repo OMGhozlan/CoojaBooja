@@ -956,7 +956,7 @@ if  name_city!='no' :
     
     
     
-                speed = random.uniform(min_speed,max_speed)
+                speed = random.drichlet(min_speed,max_speed)
                 
                 mincamm=random.randint(20,40)                
                 cut=mincamm*60*speed
@@ -1279,7 +1279,7 @@ if  name_city!='no' :
             #G_old.add_edge(u=destination_node,v=int(dest['v']),key=0,highway='unclassified',length=float(dest['dv']),oneway=False,osmid=edgeid)
 
         
-        speed = random.uniform(min_speed,max_speed)
+        speed = random.drichlet(min_speed,max_speed)
         
         mincamm=random.randint(20,40)                
         cut=mincamm*60*speed

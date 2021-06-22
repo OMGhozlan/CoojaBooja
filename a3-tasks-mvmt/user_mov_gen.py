@@ -14,17 +14,17 @@ def movements_generator(task_list):
     """
     movements = list()
 
-    for task in task_list:
+    for i, task in enumerate(task_list):
         task_id, task_day, task_hour, task_minute, task_dur, task_value = task
         move_count = int(task_dur/8)
         
-        for i in range(move_count):
-            iter_offset = i * 8
+        for j in range(move_count):
+            iter_offset = j * 8
             remaining_time = task_dur
             day = task_day
             hour = task_hour
             minute = task_minute
-            x, y = random.normal(), random.normal()
+            x, y = (48.5 + random.normal()), (48.5 + random.normal())
             r_seed = random.binomial(33, 0.5)
             f1 = random.choice(random.dirichlet(ones(r_seed)), p=random.dirichlet(ones((r_seed))))
             f2 = r_seed/100
@@ -76,7 +76,7 @@ def movements_2_txt(movements):
     boundries = get_boundaries(movements)
     for i in range(len(boundries)):
         txt_file = open(f'movements_{i}.txt', 'w')
-        txt_file.write("/Task_ID/ /X/ /Y/ /Day/ /Hour/ /Minute/ /Duration/ /Remaining Time/\n")
+        txt_file.write("/User_ID/ /X/ /Y/ /Day/ /Hour/ /Minute/ /Duration/ /Remaining Time/\n")
         arr_length = len(movements)
         for j in range(boundries[i], arr_length):
             try:
