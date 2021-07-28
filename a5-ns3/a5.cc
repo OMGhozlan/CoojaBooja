@@ -97,13 +97,12 @@ int main(int argc, char *argv[])
                                     "MinY", DoubleValue(20.0), 
                                     "DeltaX", DoubleValue(20.0), 
                                     "DeltaY", DoubleValue(20.0), 
-                                    "GridWidth", UintegerValue(5), "
-                                    LayoutType", StringValue("RowFirst"));
-                                    
+                                    "GridWidth", UintegerValue(5),
+                                    "LayoutType", StringValue("RowFirst"));
+
     mobility.SetMobilityModel("ns3::RandomWalk2dMobilityModel",
                               "Bounds", RectangleValue(Rectangle(-500, 500, -500, 500)),
-                              "Speed", StringValue("ns3::ConstantRandomVariable[Constant=2]"),
-                              "Pause", StringValue("ns3::ConstantRandomVariable[Constant=0.2]"));
+                              "Speed", StringValue("ns3::ConstantRandomVariable[Constant=2]"));
     mobility.Install(wifiStaNodes);
     mobility.Install(wifiApNode);
 
