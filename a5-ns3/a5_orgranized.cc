@@ -84,8 +84,8 @@ int main(int argc, char *argv[])
     stack.Install(wifiStaNodes);
 
     address.SetBase("20.1.2.0", "255.255.255.0");
-    address.Assign(staDevices);
     address.Assign(apDevices);
+    address.Assign(staDevices);
 
     mobility.SetPositionAllocator("ns3::GridPositionAllocator",
                                   "MinX", DoubleValue(20.0),
