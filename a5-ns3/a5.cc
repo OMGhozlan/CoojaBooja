@@ -92,8 +92,18 @@ int main(int argc, char *argv[])
     mobility.Install(p2pNodes);
     mobility.Install(csmaNodes);
 
+    mobility.SetPositionAllocator("ns3::GridPositionAllocator",
+                                    "MinX", DoubleValue(20.0), 
+                                    "MinY", DoubleValue(20.0), 
+                                    "DeltaX", DoubleValue(20.0), 
+                                    "DeltaY", DoubleValue(20.0), 
+                                    "GridWidth", UintegerValue(5), "
+                                    LayoutType", StringValue("RowFirst"));
+                                    
     mobility.SetMobilityModel("ns3::RandomWalk2dMobilityModel",
-                              "Bounds", RectangleValue(Rectangle(-100, 100, -100, 100)));
+                              "Bounds", RectangleValue(Rectangle(-500, 500, -500, 500)),
+                              "Speed", StringValue("ns3::ConstantRandomVariable[Constant=2]"),
+                              "Pause", StringValue("ns3::ConstantRandomVariable[Constant=0.2]"));
     mobility.Install(wifiStaNodes);
     mobility.Install(wifiApNode);
 
@@ -200,7 +210,7 @@ int main(int argc, char *argv[])
     anim.UpdateNodeColor(wifiStaNodes.Get(8), 255, 0, 0);
 #endif
 
-    if (tracing == true)
+    if(tracing == true)
     {
         pointToPoint.EnablePcapAll("assignment5");
         phy.EnablePcap("assignment5", apDevices.Get(0));
