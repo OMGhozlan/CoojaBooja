@@ -71,11 +71,11 @@ int main(int argc, char *argv[])
     WifiHelper wifi;
     WifiMacHelper mac;
     Ssid ssid = Ssid("ns-3-ssid");
-    mac.SetType("ns3::StaWifiMac", "Ssid", SsidValue(ssid));
+    mac.SetType("ns3::AdhocWifiMac", "Ssid", SsidValue(ssid));
 
     NetDeviceContainer staDevices;
     staDevices = wifi.Install(phy, mac, wifiStaNodes);
-    mac.SetType("ns3::ApWifiMac", "Ssid", SsidValue(ssid));
+    mac.SetType("ns3::AdhocWifiMac", "Ssid", SsidValue(ssid));
 
     NetDeviceContainer apDevices;
     apDevices = wifi.Install(phy, mac, wifiApNode);
