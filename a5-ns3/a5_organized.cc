@@ -84,8 +84,9 @@ int main(int argc, char *argv[])
     stack.Install(wifiStaNodes);
 
     address.SetBase("20.1.2.0", "255.255.255.0");
-    address.Assign(apDevices);
-    address.Assign(staDevices);
+    Ipv4InterfaceContainer apInterfaces, staInterfaces;
+    apInterfaces = address.Assign(apDevices);
+    staInterfaces = address.Assign(staDevices);
 
     mobility.SetPositionAllocator("ns3::GridPositionAllocator",
                                   "MinX", DoubleValue(20.0),
@@ -132,16 +133,16 @@ int main(int argc, char *argv[])
     /**************Application******************/
     UdpEchoServerHelper echoServer(9);
 
-    ApplicationContainer serverApps = echoServer.Install(csmaNodes.Get(nCsma));
+    ApplicationContainer serverApps = echoServer.Install(wifiStaNodes.Get(nWifi - 1));
     serverApps.Start(Seconds(0.01));
     serverApps.Stop(Seconds(10.0));
 
-    UdpEchoClientHelper echoClient(csmaInterfaces.GetAddress(nCsma), 9);
+    UdpEchoClientHelper echoClient(staInterfaces.GetAddress(nWifi - 1), 9);
     echoClient.SetAttribute("MaxPackets", UintegerValue(100));
     echoClient.SetAttribute("Interval", TimeValue(Seconds(1.0)));
     echoClient.SetAttribute("PacketSize", UintegerValue(1024));
 
-    ApplicationContainer clientApps = echoClient.Install(wifiStaNodes.Get(nWifi - 1));
+    ApplicationContainer clientApps = echoClient.Install(csmaNodes.Get(nCsma));
     clientApps.Start(Seconds(0.01));
     clientApps.Stop(Seconds(10.0));
 
